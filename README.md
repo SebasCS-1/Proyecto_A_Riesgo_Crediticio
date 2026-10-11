@@ -1,156 +1,365 @@
-<<<<<<< HEAD
 # Proyecto A: Sistema de Predicción de Riesgo Crediticio
 
-**Curso:** BD-151 Inteligencia Artificial Aplicada – Colegio Universitario de Cartago
-**Profesor:** Osvaldo González Chaves
-**Año:** 2026
+Proyecto desarrollado para el curso de **Inteligencia Artificial Aplicada**.
+
+El sistema utiliza el conjunto de datos **German Credit** para preparar y
+entrenar dos modelos de redes neuronales artificiales:
+
+1. Un modelo de clasificación binaria:
+   - Crédito bueno.
+   - Crédito malo.
+
+2. Un modelo de clasificación multiclase:
+   - Riesgo Bajo.
+   - Riesgo Medio.
+   - Riesgo Alto.
+   - Riesgo Crítico.
+
+El proyecto incluye análisis exploratorio, preprocesamiento, programación
+orientada a objetos, modelos ANN, una API REST y una interfaz para realizar
+predicciones.
+
+---
 
 ## Integrantes
 
-| Nombre | Carné | Correo |
-|---|---|---|
-| | | |
-| | | |
-| | | |
+- Sebastián Calvo Solano
+- Carlos Cambronero Zuñiga
+- Josué Francisco Redondo Gómez
+- Steven Zamora Reyes
 
-## Descripción del problema
+---
 
-Sistema inteligente que predice el riesgo crediticio de clientes bancarios para apoyar decisiones de aprobación de préstamos. Clasifica a los clientes en categorías de riesgo y proporciona predicciones binarias de aprobación/rechazo.
+## Objetivo general
+
+Desarrollar un sistema de inteligencia artificial capaz de analizar la
+información de una solicitud de crédito y generar una predicción de riesgo
+mediante redes neuronales artificiales.
+
+---
+
+## Objetivos específicos
+
+- Analizar la estructura y calidad del conjunto German Credit.
+- Identificar relaciones entre las características crediticias y la
+  clasificación del crédito.
+- Preparar las variables numéricas y categóricas para los modelos.
+- Construir una variable objetivo binaria.
+- Construir y justificar cuatro niveles académicos de riesgo.
+- Implementar el preprocesamiento mediante programación orientada a objetos.
+- Entrenar y comparar diferentes configuraciones de redes neuronales.
+- Exponer las predicciones mediante una API REST.
+- Desarrollar una interfaz sencilla para ingresar datos y consultar resultados.
+
+---
 
 ## Dataset
 
-- **Nombre:** German Credit Data (UCI Machine Learning Repository)
-- **URL:** https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data
-- **Registros:** 1,000 clientes
-- **Variables:** 20 (numéricas y categóricas)
+El proyecto utiliza el conjunto de datos **German Credit**.
 
-Colocar los archivos originales en `data/raw/` sin modificarlos.
+El archivo principal es:
 
-## Modelos
+```text
+data/raw/german.data
+```
 
-- **Modelo 1 – Clasificación Binaria:** Predecir aprobación de crédito (Bueno/Malo)
-- **Modelo 2 – Clasificación Multiclase:** Clasificar nivel de riesgo (Bajo/Medio/Alto/Crítico). El dataset solo incluye la etiqueta Bueno/Malo: el grupo debe definir y justificar el criterio para construir los cuatro niveles
+El conjunto contiene:
 
-Lineamientos de entrenamiento:
+- 1.000 registros.
+- 20 variables de entrada.
+- 1 variable objetivo.
+- 7 variables numéricas.
+- 13 variables categóricas.
 
-- Normalización con `MinMaxScaler` ajustado solo sobre el conjunto de entrenamiento.
-- Variables categóricas con `pd.get_dummies`; guardar la lista de columnas resultante en `models/columnas.pkl`.
-- Entrenamiento con `validation_split` y `EarlyStopping`; el conjunto de prueba se usa solo para la evaluación final.
-- Comparar al menos dos configuraciones por modelo (por ejemplo, con y sin `Dropout`).
+La clasificación original utiliza:
 
-## API REST
+```text
+1 = Crédito bueno
+2 = Crédito malo
+```
 
-| Método | Endpoint | Respuesta |
-|---|---|---|
-| POST | `/predict/binary` | Aprobación de crédito (Bueno/Malo) |
-| POST | `/predict/risk_level` | Nivel de riesgo (Bajo/Medio/Alto/Crítico) |
+También se conservan los archivos originales de documentación y referencia:
 
-La documentación automática queda disponible en `http://localhost:8000/docs`.
+```text
+data/raw/german.data
+data/raw/german.data-numeric
+data/raw/german.doc
+data/raw/Index
+```
+
+El archivo `german.data` se utiliza como fuente principal porque conserva las
+variables categóricas originales y permite aplicar `get_dummies` durante el
+preprocesamiento.
+
+---
 
 ## Estructura del proyecto
 
-```
-Proyecto_A_Riesgo_Crediticio/
-│
-├── README.md                      ← Guía completa de instalación y uso del proyecto
-├── requirements.txt               ← Dependencias Python
-├── .gitignore                     ← Archivos excluidos del control de versiones
-│
-├── data/
-│   ├── raw/                       ← Datos originales sin procesar
-│   └── processed/                 ← Datos limpios y preprocesados
-│       ├── train.csv              ← Conjunto de entrenamiento
-│       └── test.csv               ← Conjunto de prueba
-│
-├── notebooks/
-│   ├── 01_EDA.ipynb               ← Análisis Exploratorio de Datos
-│   ├── 02_Preprocesamiento.ipynb  ← Limpieza, variables dummy, normalización
-│   ├── 03_ANN_Modelo1.ipynb       ← Entrenamiento del Modelo 1
-│   ├── 04_ANN_Modelo2.ipynb       ← Entrenamiento del Modelo 2
-│   └── 05_Comparacion_Modelos.ipynb ← Evaluación y selección del mejor modelo
-│
-├── src/
-│   ├── __init__.py
-│   ├── config.py                  ← Configuraciones globales (rutas, parámetros)
-│   ├── data_prep.py               ← Funciones de preprocesamiento
-│   └── train/
-│       ├── __init__.py
-│       ├── model1.py              ← Entrenamiento del Modelo 1
-│       ├── model2.py              ← Entrenamiento del Modelo 2
-│       └── utils.py               ← Utilidades compartidas (métricas, gráficas)
-│
-├── models/
-│   ├── model1.keras               ← Modelo 1 guardado (formato Keras)
-│   ├── model2.keras               ← Modelo 2 guardado (formato Keras)
-│   ├── scaler.pkl                 ← MinMaxScaler entrenado
-│   └── columnas.pkl               ← Columnas finales tras get_dummies
+```text
+Proyecto_Riesgo_Crediticio/
 │
 ├── api/
-│   ├── main.py                    ← Aplicación FastAPI con endpoints
-│   ├── schemas.py                 ← Modelos Pydantic para validación
-│   └── predict.py                 ← Lógica de predicción e inferencia
+│   └── Archivos de la API REST
 │
-└── app/
-    ├── Home.py                    ← Página principal del dashboard
-    └── pages/
-        ├── 1_Prediccion.py        ← Predicciones individuales
-        ├── 2_Analisis.py          ← Análisis de lotes
-        └── 3_Metricas.py          ← Métricas y rendimiento
+├── app/
+│   └── Archivos de la interfaz
+│
+├── data/
+│   ├── raw/
+│   │   ├── german.data
+│   │   ├── german.data-numeric
+│   │   ├── german.doc
+│   │   └── Index
+│   │
+│   └── processed/
+│       ├── X_train_binario.csv
+│       ├── X_test_binario.csv
+│       ├── y_train_binario.csv
+│       ├── y_test_binario.csv
+│       ├── X_train_multiclase.csv
+│       ├── X_test_multiclase.csv
+│       ├── y_train_multiclase.csv
+│       └── y_test_multiclase.csv
+│
+├── models/
+│   ├── scaler.pkl
+│   ├── columnas_modelo.pkl
+│   ├── informacion_preprocesamiento.pkl
+│   ├── regla_multiclase.pkl
+│   └── Modelos entrenados en formato .keras
+│
+├── notebooks/
+│   ├── 01_EDA.ipynb
+│   ├── 02_Preprocesamiento.ipynb
+│   └── Notebooks de entrenamiento
+│
+├── src/
+│   ├── data_prep.py
+│   ├── probar_data_prep.py
+│   └── train/
+│
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
-## Instalación
+---
 
-Requisitos: Python 3.11 y Git.
+## Análisis exploratorio de datos
 
-```bash
-git clone <url-del-repositorio>
-cd Proyecto_A_Riesgo_Crediticio
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS / Linux
-source venv/bin/activate
-pip install -r requirements.txt
+El análisis exploratorio se encuentra en:
+
+```text
+notebooks/01_EDA.ipynb
 ```
 
-## Ejecución
+El notebook incluye:
 
-1. Ejecutar los notebooks en orden (`01` a `05`) desde `notebooks/`:
-   ```bash
-   jupyter notebook
-   ```
-2. Levantar la API (desde la raíz del proyecto):
-   ```bash
-   uvicorn api.main:app --reload
-   ```
-3. Levantar el frontend en otra terminal:
-   ```bash
-   streamlit run app/Home.py
-   ```
+- Carga y descripción del dataset.
+- Verificación de dimensiones.
+- Revisión de valores nulos.
+- Revisión de registros duplicados.
+- Estadísticas descriptivas.
+- Distribución de la variable objetivo.
+- Análisis de duración, monto y edad.
+- Comparación de variables numéricas según la clase.
+- Análisis de variables categóricas seleccionadas.
+- Tablas de cantidades y porcentajes.
+- Matriz de correlación.
+- Conclusiones del análisis.
 
-## Entregables
+### Resultados iniciales
 
-- [ ] Notebook de EDA con análisis de distribuciones y correlaciones
-- [ ] Notebook de preprocesamiento con variables dummy (get_dummies) y normalización (MinMaxScaler)
-- [ ] Dos modelos ANN entrenados y guardados (.keras)
-- [ ] API REST con endpoints /predict/binary y /predict/risk_level
-- [ ] Frontend Streamlit con formulario de entrada y visualización de resultados
-- [ ] README.md con documentación completa
+El conjunto contiene:
 
-## Resultados
+```text
+1.000 registros
+20 variables de entrada
+1 variable objetivo
+0 valores nulos
+0 registros duplicados
+```
 
-| Modelo | Accuracy | Precision | Recall | F1 |
-|---|---|---|---|---|
-| Modelo 1 | | | | |
-| Modelo 2 | | | | |
+La distribución de la variable objetivo es:
 
-**Modelo seleccionado y justificación:**
+```text
+Créditos buenos: 700 registros, 70 %
+Créditos malos:  300 registros, 30 %
+```
 
-_Completar._
+Debido a esta distribución, la evaluación de los modelos no debe depender
+exclusivamente de la exactitud.
 
-## Conclusiones y recomendaciones
+También deben considerarse métricas como:
 
-_Completar._
-=======
-# Proyecto_A_Riesgo_Crediticio
->>>>>>> d23558035bbbb419b3d1b4a0f5483c60ec8a3b33
+- Precisión.
+- Recall.
+- F1-score.
+- Matriz de confusión.
+
+---
+
+## Decisión sobre las variables
+
+Se conservaron las 20 variables originales para construir los modelos base.
+
+Antes de tomar esta decisión se comprobó que:
+
+- No existen identificadores de clientes.
+- No hay columnas duplicadas.
+- No hay variables constantes.
+- No existen valores nulos.
+- Ninguna entrada contiene directamente la respuesta.
+- Las variables describen diferentes aspectos personales, laborales y
+  crediticios.
+
+Después de aplicar `get_dummies`, las 20 variables originales quedan
+representadas mediante 61 columnas numéricas.
+
+Estas 61 columnas no representan 61 variables originales independientes.
+Corresponden a las siete variables numéricas y a la representación de las
+13 variables categóricas.
+
+---
+
+## Preprocesamiento
+
+El procedimiento detallado se encuentra en:
+
+```text
+notebooks/02_Preprocesamiento.ipynb
+```
+
+Las etapas realizadas son:
+
+1. Carga de `german.data`.
+2. Verificación de calidad.
+3. Separación de variables numéricas y categóricas.
+4. Transformación de la variable objetivo binaria.
+5. Separación de entradas y salida.
+6. Conversión de categorías mediante `pd.get_dummies`.
+7. División en entrenamiento y prueba.
+8. Normalización mediante `MinMaxScaler`.
+9. Creación de los cuatro niveles de riesgo.
+10. Guardado de los datos y objetos de transformación.
+11. Verificación de dimensiones y archivos.
+
+---
+
+## Clasificación binaria
+
+La clase original se transforma de la siguiente manera:
+
+```text
+Clase original 1 = Crédito bueno → 0
+Clase original 2 = Crédito malo  → 1
+```
+
+La salida binaria utiliza:
+
+```text
+0 = Bueno
+1 = Malo
+```
+
+El valor `1` representa el resultado de riesgo malo, por lo que la probabilidad
+del modelo puede interpretarse como la probabilidad estimada de un crédito
+malo.
+
+---
+
+## División de los datos
+
+Se utiliza la siguiente distribución:
+
+```text
+80 % para entrenamiento
+20 % para prueba
+```
+
+La división se realiza con:
+
+```python
+train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=101,
+    stratify=y
+)
+```
+
+El uso de `stratify` conserva la proporción original de las clases.
+
+Los resultados son:
+
+```text
+X_train: 800 registros y 61 entradas
+X_test:  200 registros y 61 entradas
+```
+
+La proporción en ambos conjuntos permanece en:
+
+```text
+70 % créditos buenos
+30 % créditos malos
+```
+
+El conjunto de prueba debe reservarse para la evaluación final. Durante el
+entrenamiento, la validación debe obtenerse mediante `validation_split` sobre
+el conjunto de entrenamiento.
+
+---
+
+## Normalización
+
+Se utiliza `MinMaxScaler` para transformar los valores a una escala adecuada
+para las redes neuronales.
+
+El escalador se ajusta únicamente con entrenamiento:
+
+```python
+scaler.fit_transform(X_train)
+```
+
+El conjunto de prueba se transforma utilizando el mismo escalador:
+
+```python
+scaler.transform(X_test)
+```
+
+Esto evita que la información del conjunto de prueba influya en la preparación
+del entrenamiento.
+
+---
+
+## Clasificación multiclase
+
+El dataset original contiene únicamente las clases Bueno y Malo.
+
+Para cumplir con el modelo multiclase se construyeron cuatro niveles académicos:
+
+```text
+0 = Bajo
+1 = Medio
+2 = Alto
+3 = Crítico
+```
+
+Los registros originalmente clasificados como buenos se dividen entre:
+
+```text
+Bajo
+Medio
+```
+
+Los registros originalmente clasificados como malos se dividen entre:
+
+```text
+Alto
+Crítico
+```
+
+### Puntaje de exposición
+
+La división utiliza 
