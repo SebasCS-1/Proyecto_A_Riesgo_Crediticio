@@ -3,12 +3,20 @@ venv/
 .venv/
 .venv311/
 env/
+ENV/
 
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+*.egg
 *.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -16,20 +24,28 @@ __pycache__/
 # TensorBoard y logs
 logs/
 *.log
+events.out.tfevents.*
 
 # Variables de entorno y credenciales
 .env
 .env.*
+!.env.example
 kaggle.json
+.streamlit/secrets.toml
 
 # Editores e IDE
 .vscode/
 .idea/
+*.iml
 
 # Sistema operativo
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Streamlit
-.streamlit/secrets.toml
+# Archivos temporales y respaldos
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
