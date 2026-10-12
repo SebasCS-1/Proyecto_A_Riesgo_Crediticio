@@ -173,6 +173,10 @@ class PreparadorDatos:
         self.y_train_multiclase = None
         self.y_test_multiclase = None
 
+        # Entradas del modelo multiclase
+        self.X_train_multiclase = None
+        self.X_test_multiclase = None
+
         # Lista de las 61 columnas finales.
         self.columnas_modelo = None
 
@@ -723,6 +727,18 @@ class PreparadorDatos:
             .rename(index=self.nombres_niveles)
         )
 
+        # Se agrega el puntaje como entrada del modelo multiclase.
+        # El máximo es 5, así que dividir entre 5 lo deja en rango 0 a 1.
+        self.X_train_multiclase = self.X_train_scaled.copy()
+        self.X_test_multiclase = self.X_test_scaled.copy()
+
+        self.X_train_multiclase["puntaje_exposicion"] = (
+                df_train_original["puntaje_exposicion"] / 5
+        )
+        self.X_test_multiclase["puntaje_exposicion"] = (
+                df_test_original["puntaje_exposicion"] / 5
+        )
+
         return (
             self.y_train_multiclase,
             self.y_test_multiclase
@@ -870,15 +886,13 @@ class PreparadorDatos:
         # ----------------------------------------------------
 
         # Las entradas son las mismas para ambos modelos.
-        self.X_train_scaled.to_csv(
-            self.carpeta_procesados
-            / "X_train_multiclase.csv",
+        self.X_train_multiclase.to_csv(
+            self.carpeta_procesados / "X_train_multiclase.csv",
             index=False
         )
 
-        self.X_test_scaled.to_csv(
-            self.carpeta_procesados
-            / "X_test_multiclase.csv",
+        self.X_test_multiclase.to_csv(
+            self.carpeta_procesados / "X_test_multiclase.csv",
             index=False
         )
 
@@ -1035,6 +1049,8 @@ class PreparadorDatos:
         dimensiones_esperadas = {
             "X_train": (800, 61),
             "X_test": (200, 61),
+            "X_train_multiclase": (800, 62),
+            "X_test_multiclase": (200, 62),
             "y_train_binario": (800,),
             "y_test_binario": (200,),
             "y_train_multiclase": (800,),
@@ -1047,6 +1063,8 @@ class PreparadorDatos:
             "X_test": self.X_test_scaled.shape,
             "y_train_binario": self.y_train_binario.shape,
             "y_test_binario": self.y_test_binario.shape,
+            "X_train_multiclase": self.X_train_multiclase.shape,
+            "X_test_multiclase": self.X_test_multiclase.shape,
             "y_train_multiclase": self.y_train_multiclase.shape,
             "y_test_multiclase": self.y_test_multiclase.shape
         }
