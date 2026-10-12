@@ -120,4 +120,3 @@ La IA se utilizó como herramienta de consulta, explicación y apoyo técnico.
 Las decisiones sobre los datos, la ejecución del código, la interpretación de
 los resultados y la integración final del proyecto fueron realizadas y
 verificadas por los estudiantes.
-``
